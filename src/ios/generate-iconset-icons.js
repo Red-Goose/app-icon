@@ -18,26 +18,28 @@ module.exports = async function generateIconSetIcons(sourceIcon, iconset) {
   //  We've got the iconset folder. Get the contents Json.
   const contentsPath = path.join(iconset, 'Contents.json');
   const contents = JSON.parse(fs.readFileSync(contentsPath, 'utf8'));
-  contents.images = [];
+  // contents.images = [];
 
   //  Generate each image in the full icon set, updating the contents.
-  await Promise.all(contentsTemplate.images.map(async (image) => {
-    const targetName = `${image.idiom}-${image.size}-${image.scale}.png`;
+  await Promise.all(contents.images.map(async (image) => {
+    // const targetName = `${image.idiom}-${image.size}-${image.scale}.png`;
+    const targetName = image.filename
     const targetPath = path.join(iconset, targetName);
     const targetScale = parseInt(image.scale.slice(0, 1), 10);
     const targetSize = image.size.split('x').map((p) => p * targetScale).join('x');
     await resizeImage(sourceIcon, targetPath, targetSize);
     results.icons.push(targetName);
-    contents.images.push({
-      size: image.size,
-      idiom: image.idiom,
-      scale: image.scale,
-      filename: targetName,
-    });
+    // image.filename = targetName;
+    // contents.images.push({
+    //   size: image.size,
+    //   idiom: image.idiom,
+    //   scale: image.scale,
+    //   filename: targetName,
+    // });
   }));
 
   contents.images.sort((imageA, imageB) => imageA.filename.localeCompare(imageB.filename));
-  await writeFileAsync(contentsPath, JSON.stringify(contents, null, 2));
+  // await writeFileAsync(contentsPath, JSON.stringify(contents, null, 2));
   results.contentsPath = contentsPath;
 
   return results;

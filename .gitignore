@@ -17,3 +17,5 @@ src/resize/test-images/*output.png
 
 # Windows junk.
 Thumbs.db
+
+.vscode
