@@ -5,6 +5,8 @@ const findAndroidManifests = require('./android/find-android-manifests');
 const generateManifestIcons = require('./android/generate-manifest-icons');
 const generateManifestAdaptiveIcons = require('./android/generate-manifest-adaptive-icons');
 const validateParameters = require('./validate-parameters');
+const findLaunchImagesetFolders = require('./ios/find-launch-imageset-folders');
+const generateLaunchImagesetIcons = require('./ios/generate-launch-imageset-icons');
 
 module.exports = async function generate(parameters) {
   //  Validate and coerce the parameters.
@@ -32,12 +34,27 @@ module.exports = async function generate(parameters) {
     const { icons } = await generateIconsetIcons(sourceIcon, iconset);
     results.iconsets.push({ iconset, icons });
     icons.forEach((icon) => {
-      console.log(`    ${chalk.green('✓')}  Generated icon ${icon}`);
+      console.log(`    ${chalk.green('✓')}  Generated Appicon ${icon}`);
     });
     console.log(`    ${chalk.green('✓')}  Updated Contents.json`);
 
     return null;
   }));
+  const imageSets = await findLaunchImagesetFolders(searchRoot);
+  await Promise.all(imageSets.map(async (imageset) => {
+    if (!platforms.includes('ios')) return null;
+    console.log(`Found iOS launch imageset: ${imageset}...`);
+
+    const { icons } = await generateLaunchImagesetIcons(sourceIcon, imageset);
+    results.iconsets.push({ imageset, icons });
+    icons.forEach((icon) => {
+      console.log(`    ${chalk.green('✓')}  Generated Launchimage ${icon}`);
+    });
+    console.log(`    ${chalk.green('✓')}  Updated Contents.json`);
+
+    return null;
+  }));
+
   const manifests = await findAndroidManifests(searchRoot);
   await Promise.all(manifests.map(async (manifest) => {
     if (!platforms.includes('android')) return null;
