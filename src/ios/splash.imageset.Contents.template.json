@@ -1,17 +1,17 @@
 {
     "images" : [
       {
-        "filename" : "iTunesArtwork@1x.png",
+        "filename" : "iTunesArtwork@2x.png",
         "idiom" : "universal",
         "size": "512x512",
         "scale" : "1x"
       },
       {
-        "filename" : "iTunesArtwork@2x.png",
+        "filename" : "iTunesArtwork@1x.png",
         "idiom" : "universal",
         "size": "512x512",
         "scale" : "2x"
-      },      
+      },
       {
         "filename" : "iTunesArtwork@3x.png",
         "idiom" : "universal",

@@ -7,6 +7,8 @@ const generateManifestAdaptiveIcons = require('./android/generate-manifest-adapt
 const validateParameters = require('./validate-parameters');
 const findLaunchImagesetFolders = require('./ios/find-launch-imageset-folders');
 const generateLaunchImagesetIcons = require('./ios/generate-launch-imageset-icons');
+const findSplashImagesetFolders = require('./ios/find-splash-imageset-folders');
+const generateSplashImagesetIcons = require('./ios/generate-splash-imageset-icons');
 
 module.exports = async function generate(parameters) {
   //  Validate and coerce the parameters.
@@ -40,8 +42,8 @@ module.exports = async function generate(parameters) {
 
     return null;
   }));
-  const imageSets = await findLaunchImagesetFolders(searchRoot);
-  await Promise.all(imageSets.map(async (imageset) => {
+  const launchImageSets = await findLaunchImagesetFolders(searchRoot);
+  await Promise.all(launchImageSets.map(async (imageset) => {
     if (!platforms.includes('ios')) return null;
     console.log(`Found iOS launch imageset: ${imageset}...`);
 
@@ -49,6 +51,20 @@ module.exports = async function generate(parameters) {
     results.iconsets.push({ imageset, icons });
     icons.forEach((icon) => {
       console.log(`    ${chalk.green('✓')}  Generated Launchimage ${icon}`);
+    });
+    console.log(`    ${chalk.green('✓')}  Updated Contents.json`);
+
+    return null;
+  }));
+  const splashImageSets = await findSplashImagesetFolders(searchRoot);
+  await Promise.all(splashImageSets.map(async (imageset) => {
+    if (!platforms.includes('ios')) return null;
+    console.log(`Found iOS splash imageset: ${imageset}...`);
+
+    const { icons } = await generateSplashImagesetIcons(sourceIcon, imageset);
+    results.iconsets.push({ imageset, icons });
+    icons.forEach((icon) => {
+      console.log(`    ${chalk.green('✓')}  Generated splashimage ${icon}`);
     });
     console.log(`    ${chalk.green('✓')}  Updated Contents.json`);
 
